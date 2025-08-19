@@ -8,18 +8,23 @@ transactions = []
 
 
 def load_transactions():
-    with open(EXPENSES_FILE, "r") as ef:
-        reader = csv.DictReader(ef)
-        for t in reader:
-            prev_transactions = {
-                "ID": t["ID"],
-                "Type": t["Type"],
-                "Category": t["Category"],
-                "Amount": float(t["Amount"]),
-                "Date": t["Date"],
-                "Note": t["Note"]
-            }
-            transactions.append(prev_transactions)
+    transactions.clear()
+
+    if EXPENSES_FILE.exists():
+        with open(EXPENSES_FILE, "r") as ef:
+            reader = csv.DictReader(ef)
+            for t in reader:
+                prev_transactions = {
+                    "ID": t["ID"],
+                    "Type": t["Type"],
+                    "Category": t["Category"],
+                    "Amount": float(t["Amount"]),
+                    "Date": t["Date"],
+                    "Note": t["Note"]
+                }
+                transactions.append(prev_transactions)
+    else:
+        EXPENSES_FILE.touch()
 
 
 load_transactions()
