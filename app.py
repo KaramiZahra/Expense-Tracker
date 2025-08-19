@@ -7,18 +7,36 @@ EXPENSES_FILE = Path("expenses.csv")
 transactions = []
 
 
+def load_transactions():
+    with open(EXPENSES_FILE, "r") as ef:
+        reader = csv.DictReader(ef)
+        for transaction in reader:
+            prev_transactions = {
+                "ID": transaction["ID"],
+                "Type": transaction["Type"],
+                "Category": transaction["Category"],
+                "Amount": float(transaction["Amount"]),
+                "Date": transaction["Date"],
+                "Note": transaction["Note"]
+            }
+            transactions.append(prev_transactions)
+
+
+load_transactions()
+
+
 def save_transactions():
     with open(EXPENSES_FILE, "w", newline="") as ef:
-        field_names = ['Type', 'Category', 'Amount', 'Date', 'Note']
+        field_names = ["ID", "Type", "Category", "Amount", "Date", "Note"]
         writer = csv.DictWriter(ef, fieldnames=field_names)
         writer.writeheader()
         for transaction in transactions:
-            writer.writerow({'Type': transaction['type'], 'Category': transaction['category'],
-                            'Amount': transaction['amount'], 'Date': transaction['date'], 'Note': transaction['note']})
+            writer.writerow({"ID": transaction["ID"], "Type": transaction["Type"], "Category": transaction["Category"],
+                            "Amount": transaction["Amount"], "Date": transaction["Date"], "Note": transaction["Note"]})
+
 
 
 def add_transaction():
-
     while True:
         transaction_type = input(
             "Enter transaction type 1)Income 2)Expense: ").strip()
@@ -53,16 +71,14 @@ def add_transaction():
     transaction_note = input("Enter transaction note: ").strip()
 
     new_transaction = {
-        'id': str(uuid.uuid4()),
-        'type': transaction_type,
-        'category': transaction_category,
-        'amount': transaction_amount,
-        'date': transaction_date,
-        'note': transaction_note
+        "ID": str(uuid.uuid4()),
+        "Type": transaction_type,
+        "Category": transaction_category,
+        "Amount": transaction_amount,
+        "Date": transaction_date,
+        "Note": transaction_note
     }
     transactions.append(new_transaction)
-
-    print(transactions)
 
 
 def menu():
@@ -71,11 +87,11 @@ def menu():
         print("1.Add a transaction")
         print("2.Save and exit")
 
-        user_input = input("Choose an option: ")
+        user_input = input("Choose an option(1-2): ")
 
-        if user_input == '1':
+        if user_input == "1":
             add_transaction()
-        elif user_input == '2':
+        elif user_input == "2":
             save_transactions()
             break
         else:
