@@ -10,14 +10,14 @@ transactions = []
 def load_transactions():
     with open(EXPENSES_FILE, "r") as ef:
         reader = csv.DictReader(ef)
-        for transaction in reader:
+        for t in reader:
             prev_transactions = {
-                "ID": transaction["ID"],
-                "Type": transaction["Type"],
-                "Category": transaction["Category"],
-                "Amount": float(transaction["Amount"]),
-                "Date": transaction["Date"],
-                "Note": transaction["Note"]
+                "ID": t["ID"],
+                "Type": t["Type"],
+                "Category": t["Category"],
+                "Amount": float(t["Amount"]),
+                "Date": t["Date"],
+                "Note": t["Note"]
             }
             transactions.append(prev_transactions)
 
@@ -30,10 +30,18 @@ def save_transactions():
         field_names = ["ID", "Type", "Category", "Amount", "Date", "Note"]
         writer = csv.DictWriter(ef, fieldnames=field_names)
         writer.writeheader()
-        for transaction in transactions:
-            writer.writerow({"ID": transaction["ID"], "Type": transaction["Type"], "Category": transaction["Category"],
-                            "Amount": transaction["Amount"], "Date": transaction["Date"], "Note": transaction["Note"]})
+        for t in transactions:
+            writer.writerow({"ID": t["ID"], "Type": t["Type"], "Category": t["Category"],
+                            "Amount": t["Amount"], "Date": t["Date"], "Note": t["Note"]})
 
+
+def show_transactions():
+    if transactions:
+        for index, t in enumerate(transactions):
+            print(
+                f"{index + 1} | {t['Date']} | {t['Type']} | {t['Category']} | {t['Amount']} | {t['Note']}")
+    else:
+        print("\nYou have no transactions.")
 
 
 def add_transaction():
@@ -84,14 +92,17 @@ def add_transaction():
 def menu():
     while True:
         print("\n---Expense Tracker---\n")
-        print("1.Add a transaction")
-        print("2.Save and exit")
+        print("1.Show transactions")
+        print("2.Add a transaction")
+        print("3.Save and exit")
 
-        user_input = input("Choose an option(1-2): ")
+        user_input = input("Choose an option(1-3): ")
 
         if user_input == "1":
-            add_transaction()
+            show_transactions()
         elif user_input == "2":
+            add_transaction()
+        elif user_input == "3":
             save_transactions()
             break
         else:
