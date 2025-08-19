@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 import csv
+from tabulate import tabulate
 
 EXPENSES_FILE = Path("expenses.csv")
 transactions = []
@@ -30,21 +31,9 @@ def load_transactions():
 load_transactions()
 
 
-def save_transactions():
-    with open(EXPENSES_FILE, "w", newline="") as ef:
-        field_names = ["ID", "Type", "Category", "Amount", "Date", "Note"]
-        writer = csv.DictWriter(ef, fieldnames=field_names)
-        writer.writeheader()
-        for t in transactions:
-            writer.writerow({"ID": t["ID"], "Type": t["Type"], "Category": t["Category"],
-                            "Amount": t["Amount"], "Date": t["Date"], "Note": t["Note"]})
-
-
 def show_transactions():
     if transactions:
-        for index, t in enumerate(transactions):
-            print(
-                f"{index + 1} | {t['Date']} | {t['Type']} | {t['Category']} | {t['Amount']} | {t['Note']}")
+        print(tabulate(transactions, headers="keys", tablefmt="grid"))
     else:
         print("\nYou have no transactions.")
 
@@ -84,7 +73,7 @@ def add_transaction():
     transaction_note = input("Enter transaction note: ").strip()
 
     new_transaction = {
-        "ID": str(uuid.uuid4()),
+        "ID": str(uuid.uuid4())[:8],
         "Type": transaction_type,
         "Category": transaction_category,
         "Amount": transaction_amount,
@@ -92,6 +81,16 @@ def add_transaction():
         "Note": transaction_note
     }
     transactions.append(new_transaction)
+
+
+def save_transactions():
+    with open(EXPENSES_FILE, "w", newline="") as ef:
+        field_names = ["ID", "Type", "Category", "Amount", "Date", "Note"]
+        writer = csv.DictWriter(ef, fieldnames=field_names)
+        writer.writeheader()
+        for t in transactions:
+            writer.writerow({"ID": t["ID"], "Type": t["Type"], "Category": t["Category"],
+                            "Amount": t["Amount"], "Date": t["Date"], "Note": t["Note"]})
 
 
 def menu():
