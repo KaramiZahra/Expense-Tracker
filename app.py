@@ -57,18 +57,20 @@ def add_transaction():
 
 
 def menu():
-    print("\n---Expense Tracker---\n")
-    print("1.Add a transaction")
-    print("2.Save and exit")
+    while True:
+        print("\n---Expense Tracker---\n")
+        print("1.Add a transaction")
+        print("2.Save and exit")
 
-    user_input = input("Choose an option: ")
+        user_input = input("Choose an option: ")
 
-    if user_input == '1':
-        add_transaction()
-    elif user_input == '2':
-        save_transactions()
-    else:
-        print("Invalid input.")
+        if user_input == '1':
+            add_transaction()
+        elif user_input == '2':
+            save_transactions()
+            break
+        else:
+            print("Invalid input.")
 
 
 menu()
