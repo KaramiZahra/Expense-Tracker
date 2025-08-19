@@ -1,11 +1,20 @@
 import uuid
 from datetime import datetime
+from pathlib import Path
+import csv
 
+EXPENSES_FILE = Path("expenses.csv")
 transactions = []
 
 
 def save_transactions():
-    pass
+    with open(EXPENSES_FILE, "w", newline="") as ef:
+        field_names = ['Type', 'Category', 'Amount', 'Date', 'Note']
+        writer = csv.DictWriter(ef, fieldnames=field_names)
+        writer.writeheader()
+        for transaction in transactions:
+            writer.writerow({'Type': transaction['type'], 'Category': transaction['category'],
+                            'Amount': transaction['amount'], 'Date': transaction['date'], 'Note': transaction['note']})
 
 
 def add_transaction():
