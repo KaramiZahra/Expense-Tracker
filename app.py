@@ -98,17 +98,49 @@ def add_transaction():
 
 def delete_transaction():
     if not transactions:
-        print("No transactions to delete.")
+        print("\nNo transactions to delete.")
         return
 
     show_transactions()
     user_input = input("Enter transaction ID: ").strip().lower()
+
     for index, t in enumerate(transactions):
         if user_input == t["ID"].lower():
             del transactions[index]
-            print("Transaction successfully deleted.")
+            print("\nTransaction successfully deleted.")
             return
-    print("Transaction doesn't exist.")
+
+    print("\nTransaction doesn't exist.")
+
+
+def edit_transaction():
+    if not transactions:
+        print("\nNo transactions to edit.")
+        return
+
+    show_transactions()
+    user_input = input("Enter transaction ID: ").strip().lower()
+
+    for t in transactions:
+        if user_input == t["ID"].lower():
+
+            print("Editing transaction (leave blank to keep current value):\n")
+
+            new_category = input(
+                f"Category [{t['Category']}]: ").strip() or t["Category"]
+            new_amount = input(f"Amount [{t['Amount']}]: ").strip()
+            new_date = input(f"Date [{t['Date']}]: ").strip() or t["Date"]
+            new_note = input(f"Note [{t['Note']}]: ").strip() or t["Note"]
+
+            t["Category"] = new_category
+            t["Amount"] = float(new_amount) if new_amount else t["Amount"]
+            t["Date"] = new_date
+            t["Note"] = new_note
+
+            print("\nTransaction successfully edited.")
+            return
+
+    print("\nTransaction doesn't exist.")
 
 
 def save_transactions():
@@ -127,9 +159,10 @@ def menu():
         print("1.Show transactions")
         print("2.Add a transaction")
         print("3.Delete a transaction")
-        print("4.Save and exit")
+        print("4.Edit a transaction")
+        print("5.Save and exit")
 
-        user_input = input("Choose an option(1-4): ")
+        user_input = input("Choose an option(1-5): ")
 
         if user_input == "1":
             show_transactions()
@@ -138,6 +171,8 @@ def menu():
         elif user_input == "3":
             delete_transaction()
         elif user_input == "4":
+            edit_transaction()
+        elif user_input == "5":
             save_transactions()
             break
         else:
