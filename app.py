@@ -33,7 +33,7 @@ load_transactions()
 
 def show_transactions():
     if transactions:
-        print(tabulate(transactions, headers="keys", tablefmt="grid"))
+        print(tabulate(transactions, headers="keys", tablefmt="fancy_grid"))
     else:
         print("\nYou have no transactions.")
 
@@ -80,7 +80,20 @@ def add_transaction():
         "Date": transaction_date,
         "Note": transaction_note
     }
-    transactions.append(new_transaction)
+
+    def normalize(transaction):
+        return (
+            transaction["Type"].strip().lower(),
+            transaction["Category"].strip().lower(),
+            round(float(transaction["Amount"]), 2),
+            str(transaction["Date"])
+        )
+
+    if any(normalize(t) == normalize(new_transaction) for t in transactions):
+        print("\nTransaction already exists.")
+    else:
+        transactions.append(new_transaction)
+        print("\nTransaction successfully added.")
 
 
 def save_transactions():
