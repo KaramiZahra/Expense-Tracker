@@ -96,6 +96,21 @@ def add_transaction():
         print("\nTransaction successfully added.")
 
 
+def delete_transaction():
+    if not transactions:
+        print("No transactions to delete.")
+        return
+
+    show_transactions()
+    user_input = input("Enter transaction ID: ").strip().lower()
+    for index, t in enumerate(transactions):
+        if user_input == t["ID"].lower():
+            del transactions[index]
+            print("Transaction successfully deleted.")
+            return
+    print("Transaction doesn't exist.")
+
+
 def save_transactions():
     with open(EXPENSES_FILE, "w", newline="") as ef:
         field_names = ["ID", "Type", "Category", "Amount", "Date", "Note"]
@@ -111,15 +126,18 @@ def menu():
         print("\n---Expense Tracker---\n")
         print("1.Show transactions")
         print("2.Add a transaction")
-        print("3.Save and exit")
+        print("3.Delete a transaction")
+        print("4.Save and exit")
 
-        user_input = input("Choose an option(1-3): ")
+        user_input = input("Choose an option(1-4): ")
 
         if user_input == "1":
             show_transactions()
         elif user_input == "2":
             add_transaction()
         elif user_input == "3":
+            delete_transaction()
+        elif user_input == "4":
             save_transactions()
             break
         else:
