@@ -144,24 +144,23 @@ def edit_transaction():
 
 
 def search_transaction():
-
     if not transactions:
         print("\nNo transactions to search.")
         return
 
     query = input("Search in category/note: ").strip().lower()
-    search_results = []
+    if not query:
+        print("\nSearch query can't be empty.")
+        return
 
-    if query:
-        for t in transactions:
-            if query in t["Category"].lower() or query in t["Note"].lower():
-                search_results.append(t)
+    search_results = [t for t in transactions
+                      if query in t["Category"].lower() or query in t["Note"].lower()]
 
-        if search_results:
-            print("\nTransaction(s) found:")
-            print(tabulate(search_results, headers="keys", tablefmt="fancy_grid"))
-        else:
-            print("\nNo transaction found.")
+    if search_results:
+        print("\nTransaction(s) found:")
+        print(tabulate(search_results, headers="keys", tablefmt="fancy_grid"))
+    else:
+        print("\nNo transaction found.")
 
 
 def save_transactions():
