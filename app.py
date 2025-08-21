@@ -163,6 +163,63 @@ def search_transaction():
         print("\nNo transaction found.")
 
 
+def filter_transactions():
+    if not transactions:
+        print("\nNo transactions to filter.")
+        return
+
+    filter_input = input(
+        "Filter by 1)Type 2)Category 3)Amount 4)Date: ").strip()
+    results = []
+
+    if filter_input == "1":
+        filter_type = input("Enter 1 for Income or 2 for Expense: ").strip()
+        types = {"1": "Income", "2": "Expense"}
+        if filter_type not in types:
+            print("Enter a valid type.")
+            return
+        results = [t for t in transactions if t["Type"] == types[filter_type]]
+
+    elif filter_input == "2":
+        filter_category = input("Enter category name: ").strip()
+        if not filter_category:
+            print("Category can't be empty.")
+            return
+        results = [t for t in transactions if t["Category"].lower()
+                   == filter_category.lower()]
+
+    elif filter_input == "3":
+        try:
+            min_amount = float(input("Enter min amount: ").strip())
+            max_amount = float(input("Enter max amount: ").strip())
+            results = [t for t in transactions if min_amount <=
+                       t["Amount"] <= max_amount]
+        except ValueError:
+            print("Enter valid numbers.")
+            return
+
+    elif filter_input == "4":
+        try:
+            from_date = datetime.strptime(
+                input("From date (YYYY-MM-DD): ").strip(), "%Y-%m-%d").date()
+            to_date = datetime.strptime(
+                input("To date (YYYY-MM-DD): ").strip(), "%Y-%m-%d").date()
+            results = [t for t in transactions if from_date <= datetime.strptime(
+                t["Date"], "%Y-%m-%d").date() <= to_date]
+        except Exception:
+            print("Enter valid dates in YYYY-MM-DD format.")
+            return
+
+    else:
+        print("Invalid input. Enter a valid filter number.")
+        return
+
+    if results:
+        print(tabulate(results, headers="keys", tablefmt="fancy_grid"))
+    else:
+        print("\nNo transactions match your filter.")
+
+
 def save_transactions():
     with open(EXPENSES_FILE, "w", newline="") as ef:
         field_names = ["ID", "Type", "Category", "Amount", "Date", "Note"]
@@ -181,9 +238,10 @@ def menu():
         print("3.Delete a transaction")
         print("4.Edit a transaction")
         print("5.Search a transaction")
-        print("6.Save and exit")
+        print("6.Filter transactions")
+        print("7.Save and exit")
 
-        user_input = input("Choose an option(1-6): ")
+        user_input = input("Choose an option(1-7): ")
 
         if user_input == "1":
             show_transactions()
@@ -196,6 +254,8 @@ def menu():
         elif user_input == "5":
             search_transaction()
         elif user_input == "6":
+            filter_transactions()
+        elif user_input == "7":
             save_transactions()
             break
         else:
