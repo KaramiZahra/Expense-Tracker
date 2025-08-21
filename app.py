@@ -127,10 +127,10 @@ def edit_transaction():
             print("Editing transaction (leave blank to keep current value):\n")
 
             new_category = input(
-                f"Category [{t['Category']}]: ").strip() or t["Category"]
-            new_amount = input(f"Amount [{t['Amount']}]: ").strip()
-            new_date = input(f"Date [{t['Date']}]: ").strip() or t["Date"]
-            new_note = input(f"Note [{t['Note']}]: ").strip() or t["Note"]
+                f"Category [{t["Category"]}]: ").strip() or t["Category"]
+            new_amount = input(f"Amount [{t["Amount"]}]: ").strip()
+            new_date = input(f"Date [{t["Date"]}]: ").strip() or t["Date"]
+            new_note = input(f"Note [{t["Note"]}]: ").strip() or t["Note"]
 
             t["Category"] = new_category
             t["Amount"] = float(new_amount) if new_amount else t["Amount"]
@@ -141,6 +141,27 @@ def edit_transaction():
             return
 
     print("\nTransaction doesn't exist.")
+
+
+def search_transaction():
+
+    if not transactions:
+        print("\nNo transactions to search.")
+        return
+
+    query = input("Search in category/note: ").strip().lower()
+    search_results = []
+
+    if query:
+        for t in transactions:
+            if query in t["Category"].lower() or query in t["Note"].lower():
+                search_results.append(t)
+
+        if search_results:
+            print("\nTransaction(s) found:")
+            print(tabulate(search_results, headers="keys", tablefmt="fancy_grid"))
+        else:
+            print("\nNo transaction found.")
 
 
 def save_transactions():
@@ -160,9 +181,10 @@ def menu():
         print("2.Add a transaction")
         print("3.Delete a transaction")
         print("4.Edit a transaction")
-        print("5.Save and exit")
+        print("5.Search a transaction")
+        print("6.Save and exit")
 
-        user_input = input("Choose an option(1-5): ")
+        user_input = input("Choose an option(1-6): ")
 
         if user_input == "1":
             show_transactions()
@@ -173,6 +195,8 @@ def menu():
         elif user_input == "4":
             edit_transaction()
         elif user_input == "5":
+            search_transaction()
+        elif user_input == "6":
             save_transactions()
             break
         else:
