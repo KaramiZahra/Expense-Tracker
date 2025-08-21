@@ -174,11 +174,12 @@ def filter_transactions():
 
     if filter_input == "1":
         filter_type = input("Enter 1 for Income or 2 for Expense: ").strip()
-        types = {"1": "Income", "2": "Expense"}
-        if filter_type not in types:
+        type_map = {"1": "Income", "2": "Expense"}
+        if filter_type not in type_map:
             print("Enter a valid type.")
             return
-        results = [t for t in transactions if t["Type"] == types[filter_type]]
+        results = [t for t in transactions if t["Type"]
+                   == type_map[filter_type]]
 
     elif filter_input == "2":
         filter_category = input("Enter category name: ").strip()
@@ -220,6 +221,19 @@ def filter_transactions():
         print("\nNo transactions match your filter.")
 
 
+def sort_transactions():
+    sort_input = input("Sort by 1)Type 2)Amount 3)Date: ").strip()
+    sort_map = {"1": "Type", "2": "Amount", "3": "Date"}
+    if sort_input not in sort_map:
+        print("Enter a valid number.")
+        return
+
+    sorted_transactions = sorted(
+        transactions, key=lambda t: t[sort_map[sort_input]])
+
+    print(tabulate(sorted_transactions, headers="keys", tablefmt="fancy_grid"))
+
+
 def save_transactions():
     with open(EXPENSES_FILE, "w", newline="") as ef:
         field_names = ["ID", "Type", "Category", "Amount", "Date", "Note"]
@@ -239,9 +253,10 @@ def menu():
         print("4.Edit a transaction")
         print("5.Search a transaction")
         print("6.Filter transactions")
-        print("7.Save and exit")
+        print("7.Sort transactions")
+        print("8.Save and exit")
 
-        user_input = input("Choose an option(1-7): ")
+        user_input = input("Choose an option(1-8): ")
 
         if user_input == "1":
             show_transactions()
@@ -256,6 +271,8 @@ def menu():
         elif user_input == "6":
             filter_transactions()
         elif user_input == "7":
+            sort_transactions()
+        elif user_input == "8":
             save_transactions()
             break
         else:
