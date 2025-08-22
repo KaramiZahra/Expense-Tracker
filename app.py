@@ -222,6 +222,10 @@ def filter_transactions():
 
 
 def sort_transactions():
+    if not transactions:
+        print("\nNo transactions to sort.")
+        return
+
     sort_input = input("Sort by 1)Type 2)Amount 3)Date: ").strip()
     sort_map = {"1": "Type", "2": "Amount", "3": "Date"}
     if sort_input not in sort_map:
@@ -232,6 +236,41 @@ def sort_transactions():
         transactions, key=lambda t: t[sort_map[sort_input]])
 
     print(tabulate(sorted_transactions, headers="keys", tablefmt="fancy_grid"))
+
+
+def show_summary():
+    if not transactions:
+        print("\nNo transactions to summarize.")
+        return
+
+    income_amount = [t.get("Amount")
+                     for t in transactions if t["Type"] == "Income"]
+    expense_amount = [t.get("Amount")
+                      for t in transactions if t["Type"] == "Expense"]
+    print(f"\nTotal income: {sum(income_amount)}")
+    print(f"Total expense: {sum(expense_amount)}")
+    print(f"Balance: {sum(income_amount) - sum(expense_amount)}")
+    print("-"*30)
+
+    print(f"Total number of incomes: {len(income_amount)}")
+    print(f"Total number of expenses: {len(expense_amount)}")
+    print("-"*30)
+
+    income_category = {}
+    expense_category = {}
+    for t in transactions:
+        if t["Type"] == "Income":
+            income_category[t["Category"]] = income_category.get(
+                t["Category"], 0) + t["Amount"]
+        else:
+            expense_category[t["Category"]] = expense_category.get(
+                t["Category"], 0) + t["Amount"]
+    print("Income by category")
+    for category, amount in income_category.items():
+        print(f"{category:15} {amount}")
+    print("\nExpense by category")
+    for category, amount in expense_category.items():
+        print(f"{category:15} {amount}")
 
 
 def save_transactions():
@@ -254,9 +293,10 @@ def menu():
         print("5.Search a transaction")
         print("6.Filter transactions")
         print("7.Sort transactions")
-        print("8.Save and exit")
+        print("8.Show summary")
+        print("9.Save and exit")
 
-        user_input = input("Choose an option(1-8): ")
+        user_input = input("Choose an option(1-9): ")
 
         if user_input == "1":
             show_transactions()
@@ -273,6 +313,8 @@ def menu():
         elif user_input == "7":
             sort_transactions()
         elif user_input == "8":
+            show_summary()
+        elif user_input == "9":
             save_transactions()
             break
         else:
