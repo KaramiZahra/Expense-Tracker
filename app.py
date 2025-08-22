@@ -273,6 +273,25 @@ def show_summary():
         print(f"{category:15} {amount}")
 
 
+def clear_transactions():
+    if not transactions:
+        print("\nNo transactions to clear.")
+        return
+
+    while True:
+        confirm = input(
+            "\nDo you want to clear all transactions?(y|n): ").strip().lower()
+        if confirm == "y":
+            transactions.clear()
+            print("All transactions successfully cleared.")
+            break
+        elif confirm == "n":
+            print("Action cancelled.")
+            break
+        else:
+            print("Invalid input. Enter 'y' or 'n'.")
+
+
 def save_transactions():
     with open(EXPENSES_FILE, "w", newline="") as ef:
         field_names = ["ID", "Type", "Category", "Amount", "Date", "Note"]
@@ -294,9 +313,10 @@ def menu():
         print("6.Filter transactions")
         print("7.Sort transactions")
         print("8.Show summary")
-        print("9.Save and exit")
+        print("9.Clear transactions")
+        print("10.Save and exit")
 
-        user_input = input("Choose an option(1-9): ")
+        user_input = input("Choose an option(1-10): ")
 
         if user_input == "1":
             show_transactions()
@@ -315,6 +335,8 @@ def menu():
         elif user_input == "8":
             show_summary()
         elif user_input == "9":
+            clear_transactions()
+        elif user_input == "10":
             save_transactions()
             break
         else:
