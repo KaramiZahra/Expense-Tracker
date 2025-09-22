@@ -230,6 +230,23 @@ class ExpenseTracker:
         else:
             print("\nNo transactions match your filter.")
 
+    def sort_transactions(self):
+        if not self.transactions:
+            print("\nNo transactions to sort.")
+            return
+
+        sort_input = input("Sort by 1)Type 2)Amount 3)Date: ").strip()
+        sort_map = {"1": "Type", "2": "Amount", "3": "Date"}
+        if sort_input not in sort_map:
+            print("Enter a valid number.")
+            return
+
+        sorted_transactions = sorted(
+            self.transactions, key=lambda t: getattr(t, sort_map[sort_input].lower()))
+
+        print(tabulate([s.to_dict() for s in sorted_transactions],
+              headers="keys", tablefmt="fancy_grid"))
+
     def save_transactions(self):
         transactions_data = [t.to_dict() for t in self.transactions]
         with open(self.file_path, "w") as ef:
