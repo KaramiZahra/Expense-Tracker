@@ -19,13 +19,27 @@ class Transaction:
 
     @classmethod
     def from_dict(cls, data):
-        return cls(data['ID'], data['Type'], data['Category'], data['Amount'], data.strptime(data['Date'], "%Y-%m-%d").date(), data['Note'])
+        return cls(data['ID'], data['Type'], data['Category'], data['Amount'], datetime.strptime(data['Date'], "%Y-%m-%d").date(), data['Note'])
 
 
 class ExpenseTracker:
     def __init__(self, file_path):
         self.file_path = Path(file_path)
         self.transactions = []
+
+    def load_transactions(self):
+        self.transactions.clear()
+
+        if self.file_path.exists():
+            with open(self.file_path, "r") as ef:
+                try:
+                    data = json.load(ef)
+                    self.transactions = [
+                        Transaction.from_dict(d) for d in data]
+                except json.JSONDecodeError:
+                    self.transactions.clear()
+        else:
+            self.file_path.touch()
 
     def show_transactions(self):
         if self.transactions:
@@ -139,5 +153,6 @@ class ExpenseTracker:
 
 
 if __name__ == "__main__":
-    expenses = ExpenseTracker("expenses.json")
-    expenses.menu()
+    tracker = ExpenseTracker("expenses.json")
+    tracker.load_transactions()
+    tracker.menu()
