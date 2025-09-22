@@ -151,6 +151,26 @@ class ExpenseTracker:
 
         print("\nTransaction doesn't exist.")
 
+    def search_transaction(self):
+        if not self.transactions:
+            print("\nNo transactions to search.")
+            return
+
+        query = input("Search in category/note: ").strip().lower()
+        if not query:
+            print("\nSearch query can't be empty.")
+            return
+
+        search_results = [t for t in self.transactions
+                          if query in t.category.lower() or query in t.note.lower()]
+
+        if search_results:
+            print("\nTransaction(s) found:")
+            print(tabulate([t.to_dict() for t in search_results],
+                  headers="keys", tablefmt="fancy_grid"))
+        else:
+            print("\nNo transaction found.")
+
     def save_transactions(self):
         transactions_data = [t.to_dict() for t in self.transactions]
         with open(self.file_path, "w") as ef:
