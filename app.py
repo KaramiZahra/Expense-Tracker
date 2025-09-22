@@ -247,6 +247,40 @@ class ExpenseTracker:
         print(tabulate([s.to_dict() for s in sorted_transactions],
               headers="keys", tablefmt="fancy_grid"))
 
+    def show_summary(self):
+        if not self.transactions:
+            print("\nNo transactions to summarize.")
+            return
+
+        income_amount = [t.amount
+                         for t in self.transactions if t.type == "Income"]
+        expense_amount = [t.amount
+                          for t in self.transactions if t.type == "Expense"]
+        print(f"\nTotal income: {sum(income_amount)}")
+        print(f"Total expense: {sum(expense_amount)}")
+        print(f"Balance: {sum(income_amount) - sum(expense_amount)}")
+        print("-"*30)
+
+        print(f"Total number of incomes: {len(income_amount)}")
+        print(f"Total number of expenses: {len(expense_amount)}")
+        print("-"*30)
+
+        income_category = {}
+        expense_category = {}
+        for t in self.transactions:
+            if t.type == "Income":
+                income_category[t.category] = income_category.get(
+                    t.category, 0) + t.amount
+            else:
+                expense_category[t.category] = expense_category.get(
+                    t.category, 0) + t.amount
+        print("Income by category")
+        for category, amount in income_category.items():
+            print(f"{category:15} {amount}")
+        print("\nExpense by category")
+        for category, amount in expense_category.items():
+            print(f"{category:15} {amount}")
+
     def save_transactions(self):
         transactions_data = [t.to_dict() for t in self.transactions]
         with open(self.file_path, "w") as ef:
