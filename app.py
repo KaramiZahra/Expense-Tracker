@@ -166,10 +166,69 @@ class ExpenseTracker:
 
         if search_results:
             print("\nTransaction(s) found:")
-            print(tabulate([t.to_dict() for t in search_results],
+            print(tabulate([r.to_dict() for r in search_results],
                   headers="keys", tablefmt="fancy_grid"))
         else:
             print("\nNo transaction found.")
+
+    def filter_transactions(self):
+        if not self.transactions:
+            print("\nNo transactions to filter.")
+            return
+
+        filter_input = input(
+            "Filter by 1)Type 2)Category 3)Amount 4)Date: ").strip()
+        results = []
+
+        if filter_input == "1":
+            filter_type = input(
+                "Enter 1 for Income or 2 for Expense: ").strip()
+            type_map = {"1": "Income", "2": "Expense"}
+            if filter_type not in type_map:
+                print("Enter a valid type.")
+                return
+            results = [t for t in self.transactions if t.type
+                       == type_map[filter_type]]
+
+        elif filter_input == "2":
+            filter_category = input("Enter category name: ").strip()
+            if not filter_category:
+                print("Category can't be empty.")
+                return
+            results = [t for t in self.transactions if t.category.lower()
+                       == filter_category.lower()]
+
+        elif filter_input == "3":
+            try:
+                min_amount = float(input("Enter min amount: ").strip())
+                max_amount = float(input("Enter max amount: ").strip())
+                results = [t for t in self.transactions if min_amount <=
+                           t.amount <= max_amount]
+            except ValueError:
+                print("Enter valid numbers.")
+                return
+
+        elif filter_input == "4":
+            try:
+                from_date = datetime.strptime(
+                    input("From date (YYYY-MM-DD): ").strip(), "%Y-%m-%d").date()
+                to_date = datetime.strptime(
+                    input("To date (YYYY-MM-DD): ").strip(), "%Y-%m-%d").date()
+                results = [
+                    t for t in self.transactions if from_date <= t.date <= to_date]
+            except Exception:
+                print("Enter valid dates in YYYY-MM-DD format.")
+                return
+
+        else:
+            print("Invalid input. Enter a valid filter number.")
+            return
+
+        if results:
+            print(tabulate([r.to_dict() for r in results],
+                  headers="keys", tablefmt="fancy_grid"))
+        else:
+            print("\nNo transactions match your filter.")
 
     def save_transactions(self):
         transactions_data = [t.to_dict() for t in self.transactions]
