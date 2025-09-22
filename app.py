@@ -26,6 +26,7 @@ class ExpenseTracker:
     def __init__(self, file_path):
         self.file_path = Path(file_path)
         self.transactions = []
+        self.load_transactions()
 
     def load_transactions(self):
         self.transactions.clear()
@@ -347,5 +348,4 @@ class ExpenseTracker:
 
 if __name__ == "__main__":
     tracker = ExpenseTracker("expenses.json")
-    tracker.load_transactions()
     tracker.menu()
