@@ -1,6 +1,6 @@
 # Expense Tracker (CLI)
 
-A simple command-line interface (CLI) expense tracker written in Python. Track your incomes and expenses, view summaries, and save/load transactions in CSV format.
+A simple object-oriented (OOP) command-line interface expense tracker written in Python. Track your incomes and expenses, view summaries, and save/load transactions in JSON format.
 
 ## Features
 
@@ -55,7 +55,7 @@ Follow the prompts to manage your transactions.
 ## File Structure
 
 - `app.py` – main program
-- `expenses.csv` – saved transactions (created automatically)
+- `expenses.json` – saved transactions (created automatically)
 
 ## Notes
 
