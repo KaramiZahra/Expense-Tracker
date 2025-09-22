@@ -286,6 +286,24 @@ class ExpenseTracker:
         with open(self.file_path, "w") as ef:
             json.dump(transactions_data, ef, indent=4)
 
+    def clear_transactions(self):
+        if not self.transactions:
+            print("\nNo transactions to clear.")
+            return
+
+        while True:
+            confirm = input(
+                "\nDo you want to clear all transactions?(y|n): ").strip().lower()
+            if confirm == "y":
+                self.transactions.clear()
+                print("All transactions successfully cleared.")
+                break
+            elif confirm == "n":
+                print("Action cancelled.")
+                break
+            else:
+                print("Invalid input. Enter 'y' or 'n'.")
+
     def menu(self):
         while True:
             print("\n---Expense Tracker---\n")
