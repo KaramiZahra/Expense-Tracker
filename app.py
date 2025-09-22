@@ -1,4 +1,6 @@
 from pathlib import Path
+import uuid
+from datetime import datetime
 
 
 class Transaction:
@@ -22,6 +24,64 @@ class ExpenseTracker:
     def __init__(self, file_path):
         self.file_path = Path(file_path)
         self.transactions = []
+
+    def add_transaction(self):
+        while True:
+            transaction_type = input(
+                "Enter transaction type 1)Income 2)Expense: ").strip()
+            if transaction_type == "1":
+                transaction_type = "Income"
+                break
+            elif transaction_type == "2":
+                transaction_type = "Expense"
+                break
+            else:
+                print("Invalid type.")
+
+        transaction_category = input(
+            "Enter transaction category: ").strip().capitalize()
+
+        while True:
+            try:
+                transaction_amount = float(
+                    input("Enter transaction amount: ").strip())
+                break
+            except ValueError:
+                print("Invalid amount. Enter a number.")
+
+        while True:
+            date_input = input("Enter transaction date(YYYY-MM-DD): ").strip()
+            try:
+                transaction_date = datetime.strptime(
+                    date_input, "%Y-%m-%d").date()
+                break
+            except ValueError:
+                print("Invalid date. Use YYYY-MM-DD format.")
+
+        transaction_note = input("Enter transaction note: ").strip()
+
+        new_transaction = Transaction(
+            t_id=str(uuid.uuid4())[:8],
+            t_type=transaction_type,
+            t_category=transaction_category,
+            t_amount=transaction_amount,
+            t_date=transaction_date,
+            t_note=transaction_note
+        )
+
+        def normalize(transaction):
+            return (
+                transaction.type.strip().lower(),
+                transaction.category.strip().lower(),
+                round(float(transaction.amount), 2),
+                str(transaction.date)
+            )
+
+        if any(normalize(t) == normalize(new_transaction) for t in self.transactions):
+            print("\nTransaction already exists.")
+        else:
+            self.transactions.append(new_transaction)
+            print("\nTransaction successfully added.")
 
     def menu(self):
         while True:
