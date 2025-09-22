@@ -15,7 +15,7 @@ class Transaction:
         self.note = t_note
 
     def to_dict(self):
-        return {'ID': self.id, 'Type': self.type, 'Category': self.category, 'Amount': self.amount, 'Date': self.date.strftime("%Y-%m-%d"), 'Note': self.note}
+        return {'ID': self.id, 'Type': self.type, 'Category': self.category, 'Amount': self.amount, 'Date': self.date.strftime("%Y-%m-%d") if hasattr(self.date, "strftime") else str(self.date), 'Note': self.note}
 
     @classmethod
     def from_dict(cls, data):
@@ -118,6 +118,35 @@ class ExpenseTracker:
             if user_input == t.id.lower():
                 del self.transactions[index]
                 print("\nTransaction successfully deleted.")
+                return
+
+        print("\nTransaction doesn't exist.")
+
+    def edit_transaction(self):
+        if not self.transactions:
+            print("\nNo transactions to edit.")
+            return
+
+        self.show_transactions()
+        user_input = input("Enter transaction ID: ").strip().lower()
+
+        for t in self.transactions:
+            if user_input == t.id.lower():
+
+                print("Editing transaction (leave blank to keep current value):\n")
+
+                new_category = input(
+                    f"Category [{t.category}]: ").strip() or t.category
+                new_amount = input(f"Amount [{t.amount}]: ").strip()
+                new_date = input(f"Date [{t.date}]: ").strip() or t.date
+                new_note = input(f"Note [{t.note}]: ").strip() or t.note
+
+                t.category = new_category
+                t.amount = float(new_amount) if new_amount else t.amount
+                t.date = new_date
+                t.note = new_note
+
+                print("\nTransaction successfully edited.")
                 return
 
         print("\nTransaction doesn't exist.")
