@@ -1,6 +1,7 @@
 from pathlib import Path
 import uuid
 from datetime import datetime
+from tabulate import tabulate
 
 
 class Transaction:
@@ -24,6 +25,13 @@ class ExpenseTracker:
     def __init__(self, file_path):
         self.file_path = Path(file_path)
         self.transactions = []
+
+    def show_transactions(self):
+        if self.transactions:
+            transaction_data = [t.to_dict() for t in self.transactions]
+            print(tabulate(transaction_data, headers="keys", tablefmt="fancy_grid"))
+        else:
+            print("\nYou have no transactions.")
 
     def add_transaction(self):
         while True:
