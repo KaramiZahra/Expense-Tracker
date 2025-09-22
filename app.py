@@ -10,8 +10,19 @@ class Transaction:
         self.date = t_date
         self.note = t_note
 
+    def to_dict(self):
+        return {'ID': self.id, 'Type': self.type, 'Category': self.category, 'Amount': self.amount, 'Date': self.date, 'Note': self.note}
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(data['ID'], data['Type'], data['Category'], data['Amount'], data['Date'], data['Note'])
+
 
 class ExpenseTracker:
     def __init__(self, file_path):
         self.file_path = Path(file_path)
         self.transactions = []
+
+
+if __name__ == "__main__":
+    pass
