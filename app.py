@@ -2,6 +2,7 @@ from pathlib import Path
 import uuid
 from datetime import datetime
 from tabulate import tabulate
+import json
 
 
 class Transaction:
@@ -14,11 +15,11 @@ class Transaction:
         self.note = t_note
 
     def to_dict(self):
-        return {'ID': self.id, 'Type': self.type, 'Category': self.category, 'Amount': self.amount, 'Date': self.date, 'Note': self.note}
+        return {'ID': self.id, 'Type': self.type, 'Category': self.category, 'Amount': self.amount, 'Date': self.date.strftime("%Y-%m-%d"), 'Note': self.note}
 
     @classmethod
     def from_dict(cls, data):
-        return cls(data['ID'], data['Type'], data['Category'], data['Amount'], data['Date'], data['Note'])
+        return cls(data['ID'], data['Type'], data['Category'], data['Amount'], data.strptime(data['Date'], "%Y-%m-%d").date(), data['Note'])
 
 
 class ExpenseTracker:
@@ -90,6 +91,11 @@ class ExpenseTracker:
         else:
             self.transactions.append(new_transaction)
             print("\nTransaction successfully added.")
+
+    def save_transactions(self):
+        transactions_data = [t.to_dict() for t in self.transactions]
+        with open(self.file_path, "w") as ef:
+            json.dump(transactions_data, ef, indent=4)
 
     def menu(self):
         while True:
