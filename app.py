@@ -106,6 +106,22 @@ class ExpenseTracker:
             self.transactions.append(new_transaction)
             print("\nTransaction successfully added.")
 
+    def delete_transaction(self):
+        if not self.transactions:
+            print("\nNo transactions to delete.")
+            return
+
+        self.show_transactions()
+        user_input = input("Enter transaction ID: ").strip().lower()
+
+        for index, t in enumerate(self.transactions):
+            if user_input == t.id.lower():
+                del self.transactions[index]
+                print("\nTransaction successfully deleted.")
+                return
+
+        print("\nTransaction doesn't exist.")
+
     def save_transactions(self):
         transactions_data = [t.to_dict() for t in self.transactions]
         with open(self.file_path, "w") as ef:
